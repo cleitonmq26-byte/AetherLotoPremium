@@ -3,27 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aether Loto Premium</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>LotoPremium</title>
     <style>
         :root { 
             --bg: #f4f6f9; --card: #ffffff; --primary: #0056b3; --secondary: #f39c12;
             --text: #333333; --text-light: #777777; --border: #e1e4e8;
-            --hot: #27ae60; --cold: #2980b9; --danger: #e74c3c; --header-text: #ffffff;
+            --hot: #27ae60; --cold: #2980b9; --danger: #e74c3c;
             --font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        body.dark {
-            --bg: #121212; --card: #1e1e1e; --primary: #3b82f6; --secondary: #f59e0b;
-            --text: #e5e7eb; --text-light: #9ca3af; --border: #374151;
-            --hot: #10b981; --cold: #3b82f6; --danger: #ef4444;
-        }
-        body { margin: 0; padding: 0; font-family: var(--font); background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+        body { margin: 0; padding: 0; font-family: var(--font); background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
         
-        #header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: var(--header-text); box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        #header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--primary); color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         #header h1 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: 1px; }
-        .header-controls { display: flex; align-items: center; gap: 10px;}
         #status { font-size: 11px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; }
-        .theme-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 0; }
 
         #tabs { display: flex; background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto;}
         .tab { flex: 1; padding: 15px 5px; text-align: center; font-size: 11px; font-weight: 600; color: var(--text-light); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; white-space: nowrap;}
@@ -35,161 +27,110 @@
         .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--primary); font-weight: 700; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
 
+        /* Slider */
+        .slider-container { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 12px; font-weight: bold; color: var(--text-light);}
+        input[type=range] { flex: 1; accent-color: var(--primary); }
+
         .grid-5x5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .cell { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; background: #f8f9fa; border: 1px solid var(--border); font-size: 16px; font-weight: 700; color: var(--text-light); position: relative; transition: all 0.2s; cursor: pointer;}
-        body.dark .cell { background: #2d2d2d; }
-        .cell:active { transform: scale(0.95); }
-        .cell.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .cell.hot { background: rgba(39, 174, 96, 0.15); border-color: var(--hot); color: var(--hot); }
-        .cell.cold { background: rgba(41, 128, 185, 0.15); border-color: var(--cold); color: var(--cold); }
+        .cell { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px; background: #f8f9fa; border: 1px solid var(--border); font-size: 16px; font-weight: 700; color: var(--text-light); position: relative; }
+        .cell.hot { background: #e8f5e9; border-color: var(--hot); color: var(--hot); }
+        .cell.cold { background: #e3f2fd; border-color: var(--cold); color: var(--cold); }
+        .cell.delay { background: #ffebee; border-color: var(--danger); color: var(--danger); animation: pulse 2s infinite;}
         .cell .badge { font-size: 10px; position: absolute; bottom: 4px; color: var(--text-light); font-weight: 600;}
 
         .ball-grid { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px;}
         .ball { width: 36px; height: 36px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 14px; font-weight: bold; background: var(--primary); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        select, input, textarea { width: 100%; background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 10px; box-sizing: border-box; }
-        select:focus, input:focus, textarea:focus { border-color: var(--primary); }
-        
+        select, input, textarea { width: 100%; background: #fff; color: var(--text); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.gen-btn { width: 100%; background: var(--secondary); color: #fff; border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3); }
-        button.gen-btn:active { background: #e67e22; }
-
-        .filter-row { display: flex; gap: 10px; }
-        .filter-group { flex: 1; }
-        .filter-group label { display: block; font-size: 12px; color: var(--text-light); margin-bottom: 5px; font-weight: 600;}
-
+        
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; margin-top: 10px;}
-        .stat-box { background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center;}
+        .stat-box { background: #f8f9fa; border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center;}
         .stat-val { font-size: 20px; color: var(--primary); font-weight: 800; display: block; margin-bottom: 4px;}
         .stat-label { font-size: 10px; text-transform: uppercase; color: var(--text-light);}
-
-        .saved-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding: 10px 0; font-size: 13px;}
-        .action-btn { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-left: 5px;}
-        .action-btn.del { color: var(--danger); }
-        .action-btn.audio { color: var(--primary); }
-        .action-btn.copy { color: var(--hot); }
 
         .score-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 12px; color: #fff; margin-bottom: 10px; }
         .score-high { background: var(--hot); }
         .score-mid { background: var(--secondary); }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="header">
-        <h1>Aether Premium</h1>
-        <div class="header-controls">
-            <div id="status">Conectando...</div>
-            <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-        </div>
+        <h1>LotoPremium Quantum</h1>
+        <div id="status">Baixando...</div>
     </div>
 
     <div id="tabs">
-        <div class="tab active" onclick="switchTab('tab-dash')">Stats</div>
+        <div class="tab active" onclick="switchTab('tab-dash')">Modelagem</div>
         <div class="tab" onclick="switchTab('tab-gen')">Gerador</div>
-        <div class="tab" onclick="switchTab('tab-wheel')">Fechamento</div>
         <div class="tab" onclick="switchTab('tab-audit')">Auditar</div>
-        <div class="tab" onclick="switchTab('tab-save')">Salvos</div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="tab-dash" class="container active">
-        
+        <div class="card">
+            <h3>Janela Temporal</h3>
+            <div class="slider-container">
+                <span>10</span>
+                <input type="range" id="time-window" min="10" max="3000" value="100" step="10" oninput="window.rodarModelagem()">
+                <span>3000</span>
+            </div>
+            <div style="text-align: center; font-size: 14px; font-weight: bold; color: var(--primary);" id="window-display">Analisando os últimos 100 concursos</div>
+        </div>
 
         <div class="card">
-            <h3>Mapa de Frequência</h3>
+            <h3>Heatmap (Z-Score)</h3>
             <div class="grid-5x5" id="grid-map"></div>
         </div>
+        
         <div class="card">
-            <h3>Padrões Estruturais</h3>
+            <h3>Padrões do Sorteio</h3>
             <div class="stat-grid">
-                <div class="stat-box"><span class="stat-val" id="stat-total">0</span><span class="stat-label">Concursos</span></div>
-                <div class="stat-box"><span class="stat-val" id="stat-rep">0</span><span class="stat-label">Repetição</span></div>
-                <div class="stat-box"><span class="stat-val" id="stat-pares">0</span><span class="stat-label">Pares</span></div>
-                <div class="stat-box"><span class="stat-val" id="stat-primos">0</span><span class="stat-label">Primos</span></div>
-                <div class="stat-box"><span class="stat-val" id="stat-fib">0</span><span class="stat-label">Fibonacci</span></div>
-                <div class="stat-box"><span class="stat-val" id="stat-cons">0</span><span class="stat-label">Consecutivos</span></div>
+                <div class="stat-box"><span class="stat-val" id="stat-miolo">0</span><span class="stat-label">Miolo (Centro)</span></div>
+                <div class="stat-box"><span class="stat-val" id="stat-borda">0</span><span class="stat-label">Borda</span></div>
+                <div class="stat-box"><span class="stat-val" id="stat-primos">0</span><span class="stat-label">Primos (Média)</span></div>
+                <div class="stat-box"><span class="stat-val" id="stat-soma">0</span><span class="stat-label">Soma (Média)</span></div>
             </div>
         </div>
     </div>
 
-    <!-- GERADOR -->
     <div id="tab-gen" class="container">
         <div class="card">
-            <h3>Gerador Genético</h3>
+            <h3>Gerador de Fechamento</h3>
             <div class="filter-row">
                 <div class="filter-group">
                     <label>Qtd. Jogos</label>
-                    <input type="number" id="qtd-jogos" value="3" min="1" max="10">
-                </div>
-                <div class="filter-group">
-                    <label>Repetição (Último)</label>
-                    <input type="number" id="f-rep" value="9" min="0" max="15">
+                    <input type="number" id="qtd-jogos" value="5" min="1" max="10">
                 </div>
             </div>
-            <button class="gen-btn" onclick="gerarJogos()">GERAR JOGOS (SCORE 85+)</button>
+            <p style="font-size:11px; color:var(--text-light);">Cria jogos otimizados espalhando as dezenas para máxima cobertura.</p>
+            <button class="gen-btn" onclick="gerarJogos()">GERAR FECHAMENTO QUANTUM</button>
         </div>
         <div id="resultados-gerados" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
-    <!-- FECHAMENTO -->
-    <div id="tab-wheel" class="container">
-        <div class="card">
-            <h3>Matriz de Fechamento</h3>
-            <div id="pool-display" style="font-size:14px; font-weight:bold; color:var(--primary); margin-bottom:15px;">
-                Pool: Nenhum número selecionado.
-            </div>
-            <p style="font-size:12px; color:var(--text-light); margin-top:0;">Ou digite seu pool abaixo (ex: 1, 2, 3...):</p>
-            <textarea id="custom-pool" rows="2" placeholder="17 ou 18 números separados por vírgula ou espaço"></textarea>
-            <button class="gen-btn" onclick="gerarWheeling()">GERAR MATRIZ</button>
-        </div>
-        <div id="resultados-wheel" style="display:flex; flex-direction:column; gap:15px;"></div>
-    </div>
-
-    <!-- AUDITOR -->
     <div id="tab-audit" class="container">
         <div class="card">
-            <h3>Auditar Jogo</h3>
+            <h3>Auditoria Financeira (Backtest)</h3>
             <textarea id="audit-input" rows="3" placeholder="Ex: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"></textarea>
-            <button class="gen-btn" onclick="auditarJogo()">ANALISAR HISTÓRICO</button>
+            <button class="gen-btn" onclick="auditarJogo()">SIMULAR RETORNO</button>
             <div id="audit-result" style="display:none; margin-top:15px; font-size:13px; line-height:1.6; color:var(--text);"></div>
-        </div>
-    </div>
-
-    <!-- SALVOS -->
-    <div id="tab-save" class="container">
-        <div class="card">
-            <h3>Meus Jogos</h3>
-            <div id="saved-list"></div>
         </div>
     </div>
 
     <script>
         let database = [];
         let analysisData = {};
-        let selectedPool = [];
-
-        // TEMA
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            let isDark = document.body.classList.contains('dark');
-            localStorage.setItem('aether_theme', isDark ? 'dark' : 'light');
-            document.querySelector('.theme-btn').innerText = isDark ? '☀️' : '🌙';
-        }
-        if(localStorage.getItem('aether_theme') === 'dark') {
-            document.body.classList.add('dark');
-            document.querySelector('.theme-btn').innerText = '☀️';
-        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-            if(tabId === 'tab-save') renderSaved();
-            if(tabId === 'tab-wheel') renderPoolDisplay();
         }
 
         function isPrime(num) { for(let i = 2; i < num; i++) if(num % i === 0) return false; return num > 1; }
-        function isFibonacci(num) { return [1, 2, 3, 5, 8, 13, 21].includes(num); }
 
         async function baixarHistorico() {
             const status = document.getElementById('status');
@@ -200,50 +141,52 @@
                 database = data.map(draw => draw.listaDezenas.map(Number));
                 status.innerText = `${database.length} concursos`;
                 status.style.background = "#27ae60";
-                analisarBase();
+                rodarModelagem();
             } catch (e) {
                 status.innerText = "Offline";
                 status.style.background = "#e74c3c";
-                database = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]];
-                analisarBase();
             }
         }
 
-        function analisarBase() {
+        function rodarModelagem() {
             if(database.length === 0) return;
-            let freq = {}, lastSeen = {};
-            for (let i = 1; i <= 25; i++) { freq[i] = 0; lastSeen[i] = database.length; }
             
-            database.forEach((draw, index) => {
-                draw.forEach(num => { freq[num]++; if(index < lastSeen[num]) lastSeen[num] = index; });
+            let limit = parseInt(document.getElementById('time-window').value);
+            document.getElementById('window-display').innerText = `Analisando os últimos ${limit} concursos`;
+            
+            let db = database.slice(0, limit);
+            
+            let freq = {};
+            for (let i = 1; i <= 25; i++) freq[i] = 0;
+            db.forEach(draw => { draw.forEach(num => { freq[num]++; }); });
+
+            // Z-Score
+            let totalAparicoes = db.length * 15;
+            let media = totalAparicoes / 25;
+            let variancia = 0;
+            for(let i=1; i<=25; i++) variancia += Math.pow(freq[i] - media, 2);
+            let desvioPadrao = Math.sqrt(variancia / 25);
+            
+            let zScores = {};
+            for(let i=1; i<=25; i++) zScores[i] = (freq[i] - media) / desvioPadrao;
+            let sortedZ = Object.keys(zScores).map(Number).sort((a, b) => zScores[b] - zScores[a]);
+
+            // Miolo / Borda / Primos / Soma
+            let miolo = [7,8,9,12,13,14,17,18,19];
+            let totalMiolo = 0, totalPrimos = 0, totalSoma = 0;
+
+            db.forEach(draw => {
+                totalMiolo += draw.filter(n => miolo.includes(n)).length;
+                totalPrimos += draw.filter(n => isPrime(n)).length;
+                totalSoma += draw.reduce((a, b) => a + b, 0);
             });
-            
-            let sortedFreq = Object.keys(freq).map(Number).sort((a, b) => freq[b] - freq[a]);
-            
-            let repTotal = 0, paresTotal = 0, primosTotal = 0, fibTotal = 0, consTotal = 0;
-            for(let i = 0; i < database.length; i++) {
-                let draw = database[i];
-                paresTotal += draw.filter(n => n % 2 === 0).length;
-                primosTotal += draw.filter(n => isPrime(n)).length;
-                fibTotal += draw.filter(n => isFibonacci(n)).length;
-                
-                // Análise de Consecutivos (ex: 12, 13)
-                let sorted = [...draw].sort((a,b)=>a-b);
-                for(let j=0; j < sorted.length - 1; j++) {
-                    if(sorted[j+1] === sorted[j] + 1) { consTotal++; break; } // Conta o sorteio se tiver pelo menos 1 par consecutivo
-                }
 
-                if(i < database.length - 1) repTotal += draw.filter(n => database[i+1].includes(n)).length;
-            }
+            document.getElementById('stat-miolo').innerText = (totalMiolo / db.length).toFixed(1);
+            document.getElementById('stat-borda').innerText = (15 - (totalMiolo / db.length)).toFixed(1);
+            document.getElementById('stat-primos').innerText = (totalPrimos / db.length).toFixed(1);
+            document.getElementById('stat-soma').innerText = Math.round(totalSoma / db.length);
 
-            document.getElementById('stat-total').innerText = database.length;
-            document.getElementById('stat-rep').innerText = (repTotal / (database.length - 1)).toFixed(1);
-            document.getElementById('stat-pares').innerText = (paresTotal / database.length).toFixed(1);
-            document.getElementById('stat-primos').innerText = (primosTotal / database.length).toFixed(1);
-            document.getElementById('stat-fib').innerText = (fibTotal / database.length).toFixed(1);
-            document.getElementById('stat-cons').innerText = Math.round(consTotal / database.length * 100) + '%';
-
-            analysisData = { freq, lastSeen, sortedFreq };
+            analysisData = { zScores, sortedZ, limit };
             renderHeatmap();
         }
 
@@ -253,107 +196,91 @@
             for (let i = 1; i <= 25; i++) {
                 let cell = document.createElement('div');
                 cell.className = 'cell';
-                if (selectedPool.includes(i)) cell.classList.add('selected');
-                else if (analysisData.sortedFreq.slice(0, 7).includes(i)) cell.classList.add('hot');
-                else if (analysisData.sortedFreq.slice(-5).includes(i)) cell.classList.add('cold');
-
-                cell.innerHTML = `${i}<span class="badge">${analysisData.lastSeen[i] === database.length ? '0' : analysisData.lastSeen[i]}</span>`;
-                cell.onclick = () => togglePool(i);
+                if (analysisData.sortedZ.slice(0, 7).includes(i)) cell.classList.add('hot');
+                else if (analysisData.sortedZ.slice(-5).includes(i)) cell.classList.add('cold');
+                cell.innerHTML = `${i}<span class="badge">${analysisData.zScores[i].toFixed(1)}</span>`;
                 grid.appendChild(cell);
             }
         }
 
-        function togglePool(num) {
-            if(selectedPool.includes(num)) {
-                selectedPool = selectedPool.filter(n => n !== num);
-            } else {
-                if(selectedPool.length >= 18) { alert("Máximo de 18 dezenas."); return; }
-                selectedPool.push(num);
-            }
-            selectedPool.sort((a,b)=>a-b);
-            renderHeatmap();
-            renderPoolDisplay();
-        }
-
-        function renderPoolDisplay() {
-            let display = document.getElementById('pool-display');
-            if(selectedPool.length === 0) display.innerText = "Pool: Nenhum número selecionado.";
-            else display.innerText = `Pool (${selectedPool.length}/18): ${selectedPool.join(', ')}`;
-        }
-
-        function calcularScore(jogo) {
-            let score = 0;
-            let pares = jogo.filter(n => n % 2 === 0).length;
-            let primos = jogo.filter(n => isPrime(n)).length;
-            let soma = jogo.reduce((a, b) => a + b, 0);
-            let fib = jogo.filter(n => isFibonacci(n)).length;
-            if(pares >= 6 && pares <= 9) score += 25;
-            if(soma >= 175 && soma <= 205) score += 25;
-            if(primos >= 4 && primos <= 7) score += 25;
-            if(fib >= 2 && fib <= 5) score += 25;
-            return score;
-        }
-
         async function gerarJogos() {
-            if (database.length === 0) return;
             document.getElementById('resultados-gerados').innerHTML = '';
             let qtd = parseInt(document.getElementById('qtd-jogos').value);
-            let fRep = parseInt(document.getElementById('f-rep').value);
-            let lastDraw = database[0];
+            
+            let pool = [];
+            for(let n=1; n<=25; n++) {
+                let weight = 1 + Math.max(0, analysisData.zScores[n]);
+                pool.push({ n, weight });
+            }
+            pool.sort((a,b) => b.weight - a.weight);
+            
+            let jogos = [];
+            let usados = {};
 
             for(let i=0; i<qtd; i++) {
-                let jogo = [], tentativas = 0, score = 0;
-                while(score < 85 && tentativas < 100000) {
+                let jogo = [];
+                let tentativas = 0;
+                let score = 0;
+                
+                while(score < 85 && tentativas < 10000) {
                     tentativas++;
                     jogo = [];
-                    let repetidas = lastDraw.filter(n => Math.random() < 0.6).slice(0, fRep);
-                    jogo.push(...repetidas);
+                    let tempPool = [...pool];
+                    
                     while(jogo.length < 15) {
-                        let r = Math.floor(Math.random() * 25) + 1;
-                        if(!jogo.includes(r)) jogo.push(r);
+                        // Pega um número entre os top 10, dando preferência para os não usados ainda
+                        let idx = Math.floor(Math.random() * Math.min(10, tempPool.length));
+                        let num = tempPool[idx].n;
+                        
+                        // Penaliza números que já estão em outros jogos para forçar cobertura
+                        if (usados[num] && Math.random() < 0.8 && jogo.length < 10) continue;
+                        
+                        if(!jogo.includes(num)) {
+                            jogo.push(num);
+                            tempPool.splice(idx, 1);
+                        }
                     }
                     jogo.sort((a, b) => a - b);
                     score = calcularScore(jogo);
                 }
-                renderJogo(jogo, i+1, score, 'resultados-gerados');
+                
+                jogo.forEach(n => { usados[n] = (usados[n] || 0) + 1; });
+                jogos.push(jogo);
             }
+
+            jogos.forEach((jogo, index) => {
+                renderJogo(jogo, index + 1, calcularScore(jogo));
+            });
         }
 
-        function gerarWheeling() {
-            let manualPool = document.getElementById('custom-pool').value.replace(/[^0-9]/g, ' ').trim().split(/\s+/).map(Number).filter(n => n >= 1 && n <= 25);
+        function calcularScore(jogo) {
+            let score = 0;
             
-            if (manualPool.length > 0) {
-                if(manualPool.length < 16) { alert("Digite pelo menos 16 números."); return; }
-                selectedPool = manualPool;
-            }
-            
-            if(selectedPool.length < 16) { alert("Selecione pelo menos 16 números no Mapa ou digite no campo."); return; }
-            
-            let container = document.getElementById('resultados-wheel');
-            container.innerHTML = '';
-            let pool = [...selectedPool];
-            let combos = [];
+            // Miolo / Borda (Ideal: 5 a 7 no miolo)
+            let miolo = [7,8,9,12,13,14,17,18,19];
+            let qtdMiolo = jogo.filter(n => miolo.includes(n)).length;
+            if(qtdMiolo >= 5 && qtdMiolo <= 7) score += 30;
 
-            if (pool.length === 16) {
-                for (let i = 0; i < 16; i++) { let jogo = [...pool]; jogo.splice(i, 1); combos.push(jogo); }
-            } else if (pool.length === 17) {
-                let indices = [
-                    [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], [1,2,3,4,5,6,7,8,9,10,11,12,13,16,17],
-                    [1,2,3,4,5,6,7,8,9,10,14,15,16,17,13], [1,2,3,4,5,6,7,11,12,13,14,15,16,17,8],
-                    [1,2,3,8,9,10,11,12,13,14,15,16,17,4,5], [4,5,6,7,8,9,10,11,12,13,14,15,16,17,1],
-                    [1,2,3,4,5,8,9,10,11,14,15,16,17,6,7], [1,2,3,4,5,6,7,12,13,14,15,16,17,8,9]
-                ];
-                indices.forEach(arr => combos.push(arr.map(idx => pool[idx-1])));
-            } else {
-                for(let i=0; i<12; i++) {
-                    let jogo = [];
-                    let tempPool = [...pool];
-                    while(jogo.length < 15) jogo.push(tempPool.splice(Math.floor(Math.random() * tempPool.length), 1)[0]);
-                    combos.push(jogo.sort((a,b)=>a-b));
-                }
-            }
+            // Finais (Ideal: no máximo 3 do mesmo)
+            let finais = {};
+            let maxFinais = 0;
+            jogo.forEach(n => { let f = n % 10; finais[f] = (finais[f] || 0) + 1; maxFinais = Math.max(maxFinais, finais[f]); });
+            if(maxFinais <= 3) score += 20;
 
-            combos.forEach((jogo, i) => renderJogo(jogo, i+1, 0, 'resultados-wheel'));
+            // Soma (Ideal: 175 a 205)
+            let soma = jogo.reduce((a, b) => a + b, 0);
+            if(soma >= 175 && soma <= 205) score += 20;
+
+            // Primos (Ideal: 5 ou 6)
+            let primos = jogo.filter(n => isPrime(n)).length;
+            if(primos >= 5 && primos <= 6) score += 15;
+
+            // Colunas (Nenhuma vazia)
+            let colunas = [0,0,0,0,0];
+            jogo.forEach(n => { colunas[(n-1) % 5]++; });
+            if(colunas.every(c => c > 0)) score += 15;
+
+            return score;
         }
 
         function auditarJogo() {
@@ -361,50 +288,47 @@
             if(input.length !== 15) { alert("Digite exatamente 15 números."); return; }
 
             let score = calcularScore(input);
-            let hits = { 11: 0, 12: 0, 13: 0, 14: 0, 15: 0 };
+            
+            // Simulação Financeira (Últimos 100 concursos)
+            let custo = 3.50 * 100; 
+            let premios = { 11: 6.00, 12: 12.00, 13: 30.00, 14: 2000.00, 15: 1700000.00 };
+            let ganho = 0;
+            let hits = { 11:0, 12:0, 13:0, 14:0, 15:0 };
 
-            database.forEach(draw => {
+            let simDb = database.slice(0, 100);
+            simDb.forEach(draw => {
                 let acertos = input.filter(n => draw.includes(n)).length;
-                if(acertos >= 11) hits[acertos]++;
+                if (acertos >= 11) {
+                    hits[acertos]++;
+                    ganho += premios[acertos];
+                }
             });
+
+            let lucro = ganho - custo;
+            let corLucro = lucro >= 0 ? "var(--hot)" : "var(--danger)";
 
             let resDiv = document.getElementById('audit-result');
             resDiv.style.display = 'block';
-            let color = score >= 85 ? "var(--hot)" : (score >= 50 ? "var(--secondary)" : "var(--danger)");
             
             resDiv.innerHTML = `
-                <div style="font-size:24px; color:${color}; text-align:center; margin-bottom:10px; font-weight:bold;">SCORE: ${score}/100</div>
-                <b>Histórico (${database.length} concursos):</b><br>
-                15 Pontos: ${hits[15]} vezes<br>14 Pontos: ${hits[14]} vezes<br>
-                13 Pontos: ${hits[13]} vezes<br>12 Pontos: ${hits[12]} vezes<br>11 Pontos: ${hits[11]} vezes
+                <div style="font-size:20px; color:var(--primary); text-align:center; margin-bottom:5px; font-weight:bold;">SCORE: ${score}/100</div>
+                <div style="font-size:18px; color:${corLucro}; text-align:center; margin-bottom:15px; font-weight:bold;">Lucro/Prejuízo: R$ ${lucro.toFixed(2)}</div>
+                <b>Retorno (100 concursos):</b><br>
+                15 Pontos: ${hits[15]}x<br>
+                14 Pontos: ${hits[14]}x<br>
+                13 Pontos: ${hits[13]}x<br>
+                12 Pontos: ${hits[12]}x<br>
+                11 Pontos: ${hits[11]}x
             `;
         }
 
-        function renderJogo(jogo, index, score, containerId) {
-            let container = document.getElementById(containerId);
+        function renderJogo(jogo, index, score) {
+            let container = document.getElementById('resultados-gerados');
             let card = document.createElement('div');
             card.className = 'card';
             
             let title = document.createElement('h3');
-            title.innerHTML = `Jogo ${index} ${score ? `<span class="score-badge ${score >= 100 ? 'score-high' : 'score-mid'}">SCORE: ${score}</span>` : ''}`;
-            
-            let copyBtn = document.createElement('button');
-            copyBtn.className = 'action-btn copy'; copyBtn.innerHTML = '📋';
-            copyBtn.onclick = () => {
-                let txt = jogo.map(n => n < 10 ? '0'+n : n).join(' ');
-                navigator.clipboard.writeText(txt);
-                copyBtn.innerHTML = '✅';
-                setTimeout(() => copyBtn.innerHTML = '📋', 1500);
-            };
-            title.appendChild(copyBtn);
-
-            let audioBtn = document.createElement('button');
-            audioBtn.className = 'action-btn audio'; audioBtn.innerHTML = '🔊';
-            audioBtn.onclick = () => {
-                let ut = new SpeechSynthesisUtterance("Jogo " + index + ": " + jogo.join(', '));
-                ut.lang = 'pt-BR'; speechSynthesis.speak(ut);
-            };
-            title.appendChild(audioBtn);
+            title.innerHTML = `Jogo ${index} <span class="score-badge ${score >= 90 ? 'score-high' : 'score-mid'}">SCORE: ${score}</span>`;
             card.appendChild(title);
 
             let grid = document.createElement('div');
@@ -412,47 +336,7 @@
             jogo.forEach(n => { let b = document.createElement('div'); b.className = 'ball'; b.innerText = n; grid.appendChild(b); });
             card.appendChild(grid);
             
-            let saveBtn = document.createElement('button');
-            saveBtn.className = 'gen-btn'; saveBtn.style.marginTop = '15px'; saveBtn.style.background = '#27ae60'; saveBtn.innerText = `SALVAR`;
-            saveBtn.onclick = () => salvarJogo(jogo);
-            card.appendChild(saveBtn);
-
             container.appendChild(card);
-        }
-
-        function salvarJogo(jogo) {
-            let saved = JSON.parse(localStorage.getItem('aether_premium')) || [];
-            saved.push(jogo);
-            localStorage.setItem('aether_premium', JSON.stringify(saved));
-            alert("Jogo salvo!");
-        }
-
-        function renderSaved() {
-            let saved = JSON.parse(localStorage.getItem('aether_premium')) || [];
-            let list = document.getElementById('saved-list');
-            list.innerHTML = '';
-            if(saved.length === 0) { list.innerHTML = '<div style="text-align:center; color:#777;">Nenhum jogo salvo.</div>'; return; }
-
-            saved.forEach((jogo, i) => {
-                let item = document.createElement('div'); item.className = 'saved-item';
-                item.innerHTML = `<span><b>${jogo.join(' - ')}</b></span>`;
-                
-                let copyBtn = document.createElement('button');
-                copyBtn.className = 'action-btn copy'; copyBtn.innerHTML = '📋';
-                copyBtn.onclick = () => {
-                    let txt = jogo.map(n => n < 10 ? '0'+n : n).join(' ');
-                    navigator.clipboard.writeText(txt);
-                    copyBtn.innerHTML = '✅';
-                    setTimeout(() => copyBtn.innerHTML = '📋', 1500);
-                };
-                item.appendChild(copyBtn);
-
-                let delBtn = document.createElement('button');
-                delBtn.className = 'action-btn del'; delBtn.innerText = 'X';
-                delBtn.onclick = () => { saved.splice(i, 1); localStorage.setItem('aether_premium', JSON.stringify(saved)); renderSaved(); };
-                item.appendChild(delBtn);
-                list.appendChild(item);
-            });
         }
 
         window.onload = () => { baixarHistorico(); };
